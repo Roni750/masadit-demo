@@ -138,3 +138,15 @@ A page-shaped skeleton covers the rare case where a chunk hasn't arrived yet, so
 **Why:** Less code to download and parse before the first screen, with no added wait on the first visit to each screen.
 
 **Consequences:** Measured: each screen is now 1–3 KB gzipped, but the first load only dropped from ~359 KB to ~338 KB gzipped. Most of the weight is shared library code (Ionic, React, i18n, TanStack Query) that Home needs too. On native builds the files are local, so the gain is parse time rather than download time.
+
+---
+
+## 11. Viewed data is not saved to the device
+
+**Context:** Saving TanStack Query's cache to the device would let screens already viewed open after an app restart while offline.
+
+**Decision:** Don't save it. Cached data lives in memory for the current session only.
+
+**Why:** It is financial data, and device storage isn't encrypted by default. Keeping it on the phone would also raise how long it lives there and when it must be cleared, for example on sign-out. That risk isn't worth it for offline reading.
+
+**Consequences:** Offline, the app shows data that was already loaded in the current session, and the offline notice says exactly that. A write queued while offline is lost if the app is closed before the connection returns.

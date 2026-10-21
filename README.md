@@ -12,7 +12,7 @@ A rebuild of the MyBiz bookkeeping app's Home and History screens in **Ionic + R
   - the client card: details, the client's documents, the bookkeeping ledger, and editing
   - Excel export (plain, or detailed with due dates and recipients)
 
-Architecture decisions and the reasoning behind them are in **[DECISIONS.md](DECISIONS.md)**.
+Architecture decisions and the reasoning behind them are in **[DECISIONS.md](DECISIONS.md)**. How the same process would migrate the rest of the legacy app, screen by screen, is in **[MIGRATION.md](MIGRATION.md)**.
 
 ## Repository layout
 
