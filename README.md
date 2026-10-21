@@ -49,17 +49,18 @@ npm run test.e2e -w web        # Cypress end-to-end (needs `npm run dev`; resets
 
 The API's Postgres integration tests run when `TEST_DATABASE_URL` points to a disposable database. See the header of `api/src/documents/repository.int.test.ts` for a one-line Docker command.
 
-## Android / iOS
+## Android
+
+The native Android project is in `web/android` (app ID `io.github.roni750.masaditdemo`). Building it requires [Android Studio](https://developer.android.com/studio).
 
 ```bash
-npm run build -w web
 cd web
-npx cap add android            # once; creates the native project (use `ios` on macOS)
-npx cap sync
-npx cap open android           # opens Android Studio to run on a device or emulator
+echo VITE_API_URL=https://<your-api>.onrender.com > .env.production.local   # the phone can't reach localhost
+npm run android:sync           # builds the web app and copies it into the Android project
+npm run android:open           # opens Android Studio: Run ▶ on a device or emulator, or Build → Generate APKs
 ```
 
-Set `VITE_API_URL` to the deployed API's URL before building. The phone can't reach `localhost` on your computer.
+App icons and the splash screen are generated from `web/public/logo.svg`: `web/assets/logo.png` is the source, and `npm run assets:generate` rebuilds them. The installable web version (PWA) gets its icons from the same SVG at build time.
 
 ## Deployment
 

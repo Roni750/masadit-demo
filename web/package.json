@@ -9,9 +9,13 @@
     "preview": "vite preview",
     "test.e2e": "cypress run",
     "test.unit": "vitest",
-    "lint": "eslint"
+    "lint": "eslint",
+    "android:sync": "npm run build && cap sync android",
+    "android:open": "cap open android",
+    "assets:generate": "capacitor-assets generate --android --iconBackgroundColor '#ffffff' --splashBackgroundColor '#eaf1f9' --splashBackgroundColorDark '#eaf1f9'"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
     "@capacitor/app": "8.1.2",
     "@capacitor/core": "8.5.3",
     "@capacitor/filesystem": "^8.1.5",
@@ -34,6 +38,7 @@
     "workbox-window": "^7.4.1"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "8.5.3",
     "@testing-library/dom": ">=7.21.4",
     "@testing-library/jest-dom": "^5.16.5",
