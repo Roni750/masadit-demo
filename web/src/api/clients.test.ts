@@ -41,9 +41,9 @@ describe('clients adapter', () => {
   });
 
   it('round-trips a client back to the API shape for saving', () => {
-    const { id: _id, ...expected } = rawClient;
-    const { id: _clientId, ...changes } = toClient(rawClient);
+    const expected: Partial<typeof rawClient> = { ...rawClient };
+    delete expected.id;
 
-    expect(toApiClientChanges(changes)).toEqual(expected);
+    expect(toApiClientChanges(toClient(rawClient))).toEqual(expected);
   });
 });
