@@ -1,14 +1,30 @@
-import { lazy, type ComponentType } from 'react';
+import { createElement, use, type ComponentType } from 'react';
 
-export type PreloadablePage = ReturnType<typeof lazy<ComponentType>> & { preload: () => Promise<unknown> };
+type PageModule = { default: ComponentType };
 
-// React.lazy plus a `preload()` that starts downloading the page's chunk early (on touch-down,
-// or when the app is idle), so by the time the user navigates the code is usually already there.
-// The import runs once; preload() and the first render share the same promise.
-export const lazyPage = (load: () => Promise<{ default: ComponentType }>): PreloadablePage => {
-  let pending: Promise<{ default: ComponentType }> | undefined;
-  const loadOnce = () => (pending ??= load());
-  return Object.assign(lazy(loadOnce), { preload: loadOnce });
+export type PreloadablePage = ComponentType & { preload: () => Promise<unknown> };
+
+/**
+ * A code-split page with a `preload()` that starts downloading its chunk early (on touch-down,
+ * or when the app is idle).
+ *
+ * Not React.lazy: React.lazy suspends on its first render even when the chunk is already loaded,
+ * because it learns of the resolved promise only after awaiting it. Ionic would then animate the
+ * Suspense fallback page, and the real page would stay invisible once it replaced the fallback.
+ * Here, once the module has loaded the page renders synchronously, so in-app navigation (which
+ * waits for preload, see useAppRouter) never suspends. Only a cold deep link shows the fallback.
+ */
+export const lazyPage = (load: () => Promise<PageModule>): PreloadablePage => {
+  let loaded: PageModule | undefined;
+  let pending: Promise<PageModule> | undefined;
+  const preload = () =>
+    (pending ??= load().then((module) => {
+      loaded = module;
+      return module;
+    }));
+
+  const Page = () => createElement((loaded ?? use(preload())).default);
+  return Object.assign(Page, { preload });
 };
 
 // Runs `task` when the browser is idle, so preloading never competes with the current screen's work
