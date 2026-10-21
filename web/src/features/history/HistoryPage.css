@@ -1,0 +1,13 @@
+.history-content {
+  --background: var(--app-page-background);
+}
+
+.history-search {
+  --background: var(--app-card-background);
+}
+
+.history-message {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--ion-color-medium-shade);
+}

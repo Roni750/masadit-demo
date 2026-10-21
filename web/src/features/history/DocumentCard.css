@@ -1,0 +1,94 @@
+/* Logical properties (inline-start/end) so the layout mirrors automatically between RTL and LTR */
+
+.document-card {
+  position: relative;
+  margin: 0 12px 10px;
+  border: 1px solid var(--app-card-border);
+  border-radius: 6px;
+  background: var(--app-card-background);
+  overflow: hidden;
+}
+
+.document-card__body {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  width: 100%;
+  /* Room for the status pill, which sits over the inline-end corner */
+  padding: 14px 16px;
+  padding-inline-end: 104px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+@media (hover: hover) {
+  .document-card__body:hover {
+    background: var(--app-card-hover);
+  }
+}
+
+.document-card__body:active {
+  background: var(--app-card-active);
+}
+
+.document-card__body:focus-visible {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: -2px;
+}
+
+.document-card__type {
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.document-card__number,
+.document-card__note,
+.document-card__meta {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: var(--ion-color-step-700, #444);
+}
+
+.document-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.document-card__meta ion-icon {
+  color: var(--ion-color-medium);
+  font-size: 1rem;
+}
+
+.document-card__divider {
+  color: var(--ion-color-medium);
+}
+
+.document-card__amounts {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.document-card__total {
+  font-weight: 600;
+}
+
+.document-card__vat,
+.document-card__foreign {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--ion-color-step-600, #555);
+}
+
+.document-card__status {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+}

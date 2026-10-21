@@ -1,0 +1,48 @@
+.status-pill {
+  min-width: 64px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    filter 120ms ease;
+}
+
+.status-pill--static {
+  display: inline-block;
+  text-align: center;
+  cursor: default;
+}
+
+.status-pill--open {
+  background: var(--app-status-open);
+}
+
+.status-pill--closed {
+  background: var(--app-status-closed);
+}
+
+.status-pill--cancelled {
+  background: var(--ion-color-medium);
+}
+
+@media (hover: hover) {
+  button.status-pill:hover {
+    filter: brightness(1.08);
+  }
+}
+
+button.status-pill:active {
+  transform: scale(0.94);
+  filter: brightness(0.92);
+}
+
+.status-pill:focus-visible {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: 2px;
+}

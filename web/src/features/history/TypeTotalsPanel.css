@@ -1,0 +1,117 @@
+.type-totals {
+  margin: 12px 12px 10px;
+  border: 1px solid var(--app-card-border);
+  border-radius: 6px;
+  background: var(--app-card-background);
+  overflow: hidden;
+}
+
+.type-totals button {
+  position: relative;
+  overflow: hidden;
+  border: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.type-totals button:focus-visible {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: -2px;
+}
+
+.type-totals__all {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: var(--app-card-background);
+  font-size: 1.05rem;
+  color: var(--ion-color-medium-shade);
+  border-bottom: 1px solid var(--app-card-border) !important;
+  transition: color 150ms ease;
+}
+
+.type-totals__all--selected {
+  color: var(--ion-color-primary);
+  font-weight: 600;
+}
+
+.type-totals__rows {
+  padding: 6px 0;
+  background: var(--app-panel-background);
+}
+
+.type-totals__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 16px;
+  background: transparent;
+  text-align: start;
+  transition: background-color 150ms ease;
+}
+
+.type-totals__row[aria-pressed='true'] {
+  font-weight: 600;
+}
+
+@media (hover: hover) {
+  .type-totals__row:hover {
+    background: var(--app-card-hover);
+  }
+}
+
+.type-totals__row:active {
+  background: var(--app-card-active);
+}
+
+.type-totals__icon {
+  color: var(--ion-color-medium);
+  font-size: 1.1rem;
+}
+
+.type-totals__name {
+  flex: 1;
+}
+
+.type-totals__amount {
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.type-totals__chevron {
+  color: var(--ion-color-medium);
+  /* The chevron points toward the feed's reading direction; flipRtl mirrors it in Hebrew */
+  transition: transform 150ms ease;
+}
+
+.type-totals__row:active .type-totals__chevron {
+  transform: translateX(3px);
+}
+
+.type-totals__show-all {
+  display: block;
+  margin: 8px 16px 6px;
+  margin-inline-end: auto;
+  padding: 8px 16px;
+  border: 1px solid var(--ion-color-medium) !important;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ion-color-medium-shade);
+  transition:
+    background-color 150ms ease,
+    transform 120ms ease;
+}
+
+@media (hover: hover) {
+  .type-totals__show-all:hover {
+    background: var(--app-card-hover);
+  }
+}
+
+.type-totals__show-all:active {
+  transform: scale(0.97);
+  background: var(--app-card-active);
+}

@@ -1,0 +1,20 @@
+/* Theme matched to the legacy app's colors. See http://ionicframework.com/docs/theming/ */
+
+:root {
+  --ion-color-primary: #2f6fd0;
+  --ion-color-primary-rgb: 47, 111, 208;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #2962b7;
+  --ion-color-primary-tint: #447dd5;
+
+  --app-page-background: #eaf1f9;
+  --app-panel-background: #efefef;
+  --app-card-background: #ffffff;
+  --app-card-border: #d9dde3;
+  --app-card-hover: rgba(47, 111, 208, 0.05);
+  --app-card-active: rgba(47, 111, 208, 0.12);
+
+  --app-status-open: #d9853b;
+  --app-status-closed: #2e7d5b;
+}
