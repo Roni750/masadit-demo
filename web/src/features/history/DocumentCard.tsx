@@ -3,6 +3,7 @@ import { briefcase, person, timeOutline } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 import { isForeignCurrency, type DocumentSummary } from '../../domain/documents';
 import { formatDate, formatMoney } from '../../lib/format';
+import { pages } from '../../pages';
 import { useIntlLocale } from '../../state/locale';
 import { StatusPill } from './StatusPill';
 import './DocumentCard.css';
@@ -23,6 +24,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document }) => {
       <button
         type="button"
         className="document-card__body ion-activatable"
+        onPointerDown={() => void pages.document.preload()}
         onClick={() => router.push(`/documents/${document.id}`)}
       >
         <div className="document-card__info">
@@ -69,7 +71,11 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document }) => {
       </button>
 
       <div className="document-card__status">
-        <StatusPill document={document} onClick={() => router.push(`/documents/${document.id}/status`)} />
+        <StatusPill
+          document={document}
+          onPointerDown={() => void pages.status.preload()}
+          onClick={() => router.push(`/documents/${document.id}/status`)}
+        />
       </div>
     </article>
   );

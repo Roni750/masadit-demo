@@ -122,3 +122,19 @@ Newest decisions are added at the bottom.
 **Why:** Allocations cross document types, and an orphaned allocation would silently change an invoice's balance and status. A plain `(type, id)` reference can't be checked by the database, and child tables per type can't express cross-type closing. The base table gives database-enforced integrity at the cost of one join.
 
 **Consequences:** This schema belongs to the mock backend only. In the real migration the backend and its schemas stay as they are; the frontend adapts to them through the adapter layer (decision 8), so this choice doesn't carry over.
+
+---
+
+## 10. Screens load on demand, and are preloaded before they're needed
+
+**Context:** All screens shipped in one bundle that had to download and parse before Home appeared.
+
+**Decision:** Every screen except Home is code-split with dynamic `import()` (`React.lazy`), each in its own chunk. Chunks are preloaded so navigation doesn't wait for them:
+- Home preloads History once the app is idle.
+- Touching a card, status pill or link starts loading the screen the tap will open, the same touch-down prefetch used for data (decision 4).
+
+A page-shaped skeleton covers the rare case where a chunk hasn't arrived yet, so Ionic's page transition still animates a page.
+
+**Why:** Less code to download and parse before the first screen, with no added wait on the first visit to each screen.
+
+**Consequences:** Measured: each screen is now 1–3 KB gzipped, but the first load only dropped from ~359 KB to ~338 KB gzipped. Most of the weight is shared library code (Ionic, React, i18n, TanStack Query) that Home needs too. On native builds the files are local, so the gain is parse time rather than download time.

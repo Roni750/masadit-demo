@@ -22,6 +22,7 @@ import { useConfirm } from '../../hooks/useConfirm';
 import { useErrorToast } from '../../hooks/useErrorToast';
 import { useWipAlert } from '../../hooks/useWipAlert';
 import { formatDate, formatMoney } from '../../lib/format';
+import { pages } from '../../pages';
 import { useIntlLocale } from '../../state/locale';
 import { DocumentHeaderCard } from './DocumentHeaderCard';
 import { useCancelDocument, useDeleteDocument, useDocument } from './queries';
@@ -127,8 +128,11 @@ const DocumentPage: React.FC = () => {
 
   const wip = () => void showWip();
 
-  const openMenu = () =>
-    presentActionSheet({
+  // The menu leads to the status and close-other screens: load them while it opens
+  const openMenu = () => {
+    void pages.status.preload();
+    void pages.closeOther.preload();
+    return presentActionSheet({
       header: t('document.menu'),
       buttons: [
         { text: t('document.produceInEnglish'), handler: wip },
@@ -148,6 +152,7 @@ const DocumentPage: React.FC = () => {
         { text: t('document.close'), role: 'cancel' },
       ],
     });
+  };
 
   const openCreateMenu = () =>
     presentActionSheet({

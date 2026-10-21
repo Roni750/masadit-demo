@@ -1,15 +1,13 @@
+import { Suspense } from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './api/queryClient';
-import ClientEditPage from './features/clients/ClientEditPage';
-import ClientPage from './features/clients/ClientPage';
-import CloseOtherPage from './features/documents/CloseOtherPage';
-import DocumentPage from './features/documents/DocumentPage';
-import StatusPage from './features/documents/StatusPage';
-import HistoryPage from './features/history/HistoryPage';
+import { PageFallback } from './components/PageFallback';
 import HomePage from './features/home/HomePage';
+import type { PreloadablePage } from './lib/lazyPage';
+import { pages } from './pages';
 import { LocaleSync } from './state/LocaleSync';
 import './i18n';
 
@@ -34,6 +32,13 @@ import './theme/variables.css';
 
 setupIonicReact();
 
+// Each lazy screen gets its own Suspense boundary, so loading one never blanks the others in the stack
+const lazyRoute = (Page: PreloadablePage) => (
+  <Suspense fallback={<PageFallback />}>
+    <Page />
+  </Suspense>
+);
+
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
     <LocaleSync />
@@ -41,12 +46,12 @@ const App: React.FC = () => (
       <IonReactRouter>
         <IonRouterOutlet>
           <Route path="/home" element={<HomePage />} />
-          <Route path="/history" element={<HistoryPage />} />
-          <Route path="/documents/:id" element={<DocumentPage />} />
-          <Route path="/documents/:id/status" element={<StatusPage />} />
-          <Route path="/documents/:id/close-other" element={<CloseOtherPage />} />
-          <Route path="/clients/:id" element={<ClientPage />} />
-          <Route path="/clients/:id/edit" element={<ClientEditPage />} />
+          <Route path="/history" element={lazyRoute(pages.history)} />
+          <Route path="/documents/:id" element={lazyRoute(pages.document)} />
+          <Route path="/documents/:id/status" element={lazyRoute(pages.status)} />
+          <Route path="/documents/:id/close-other" element={lazyRoute(pages.closeOther)} />
+          <Route path="/clients/:id" element={lazyRoute(pages.client)} />
+          <Route path="/clients/:id/edit" element={lazyRoute(pages.clientEdit)} />
           <Route path="/" element={<Navigate to="/home" replace />} />
         </IonRouterOutlet>
       </IonReactRouter>

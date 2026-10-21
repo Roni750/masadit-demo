@@ -2,6 +2,7 @@ import { IonIcon, IonSkeletonText, useIonRouter } from '@ionic/react';
 import { timeOutline } from 'ionicons/icons';
 import type { DocumentSummary } from '../../domain/documents';
 import { formatDate } from '../../lib/format';
+import { pages } from '../../pages';
 import { useIntlLocale } from '../../state/locale';
 import { StatusPill } from '../history/StatusPill';
 import './documents.css';
@@ -29,7 +30,12 @@ export const DocumentHeaderCard: React.FC<DocumentHeaderCardProps> = ({ document
   return (
     <section className="doc-section doc-header">
       <div>
-        <button type="button" className="doc-link" onClick={() => router.push(`/clients/${document.client.id}`)}>
+        <button
+          type="button"
+          className="doc-link"
+          onPointerDown={() => void pages.client.preload()}
+          onClick={() => router.push(`/clients/${document.client.id}`)}
+        >
           {document.client.name}
         </button>
         <div className="doc-muted"># {document.number}</div>
@@ -40,6 +46,7 @@ export const DocumentHeaderCard: React.FC<DocumentHeaderCardProps> = ({ document
       </div>
       <StatusPill
         document={document}
+        onPointerDown={linkStatus ? () => void pages.status.preload() : undefined}
         onClick={linkStatus ? () => router.push(`/documents/${document.id}/status`) : undefined}
       />
     </section>

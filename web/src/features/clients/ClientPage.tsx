@@ -18,6 +18,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import type { DocumentStatus, DocumentType } from '../../domain/documents';
+import { pages } from '../../pages';
 import { DocumentFeed } from '../history/DocumentFeed';
 import { ClientDetails } from './ClientDetails';
 import { LedgerView } from './LedgerView';
@@ -46,7 +47,12 @@ const ClientPage: React.FC = () => {
           </IonButtons>
           <IonTitle>{t('clients.title')}</IonTitle>
           <IonButtons slot="end">
-            <IonButton data-action="edit" aria-label={t('clients.edit')} onClick={() => router.push(`/clients/${id}/edit`)}>
+            <IonButton
+              data-action="edit"
+              aria-label={t('clients.edit')}
+              onPointerDown={() => void pages.clientEdit.preload()}
+              onClick={() => router.push(`/clients/${id}/edit`)}
+            >
               <IonIcon slot="icon-only" icon={pencil} />
             </IonButton>
           </IonButtons>

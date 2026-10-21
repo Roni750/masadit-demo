@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useErrorToast } from '../../hooks/useErrorToast';
 import { formatDate, formatMoney } from '../../lib/format';
+import { pages } from '../../pages';
 import { useIntlLocale } from '../../state/locale';
 import { ClosingRow } from './ClosingRow';
 import { ClosingSummaryCard } from './ClosingSummaryCard';
@@ -43,8 +44,9 @@ const StatusPage: React.FC = () => {
   const targetIsOpen = summary?.status === 'open' && !summary.isCancelled;
   const typeName = summary ? t(`documentType.${summary.type}`) : '';
 
-  const openMenu = () =>
-    presentActionSheet({
+  const openMenu = () => {
+    void pages.closeOther.preload();
+    return presentActionSheet({
       buttons: [
         {
           text: t('closing.closeOtherWith', { type: typeName, number: summary?.number }),
@@ -53,6 +55,7 @@ const StatusPage: React.FC = () => {
         { text: t('document.close'), role: 'cancel' },
       ],
     });
+  };
 
   const rows = document && candidates.data && [
     ...document.closedBy.map((allocation) => (

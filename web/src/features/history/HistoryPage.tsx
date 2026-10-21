@@ -18,13 +18,15 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { addCircle, filter as filterIcon, optionsOutline } from 'ionicons/icons';
 import { useAtomValue } from 'jotai';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { documentKeys } from '../../api/queryKeys';
 import type { DocumentType } from '../../domain/documents';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { useErrorToast } from '../../hooks/useErrorToast';
 import { useWipAlert } from '../../hooks/useWipAlert';
+import { whenIdle } from '../../lib/lazyPage';
+import { pages } from '../../pages';
 import { directionAtom } from '../../state/locale';
 import { DocumentFeed } from './DocumentFeed';
 import { exportDocuments } from './exportDocuments';
@@ -46,6 +48,9 @@ const HistoryPage: React.FC = () => {
   const [selectedType, setSelectedType] = useState<DocumentType>();
   const [exporting, setExporting] = useState(false);
   const search = useDebouncedValue(searchInput.trim(), 300) || undefined;
+
+  // A document is the likely next screen
+  useEffect(() => whenIdle(() => void pages.document.preload()), []);
 
   const refresh = async (event: CustomEvent<RefresherEventDetail>) => {
     await queryClient.invalidateQueries({ queryKey: documentKeys.all });
