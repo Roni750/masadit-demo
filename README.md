@@ -66,6 +66,17 @@ npm run android:open           # opens Android Studio: Run ▶ on a device or em
 
 App icons and the splash screen are generated from `web/public/logo.svg`: `web/assets/logo.png` is the source, and `npm run assets:generate` rebuilds them. The installable web version (PWA) gets its icons from the same SVG at build time.
 
+### Native features, running on Android
+
+Screenshots from the Android build running on a Pixel 10 emulator (Android 17), against the deployed API. Each feature goes through Capacitor's native plugins, not a web imitation.
+
+| | |
+|:---:|:---:|
+| <img src="docs/screenshots/android-share-sheet.png" width="260" alt="Android share sheet with a document summary"> | <img src="docs/screenshots/android-notification-permission.png" width="260" alt="Android asking to allow MyBiz notifications"> |
+| **Native share sheet.** Swiping a History card (here a price quote) and tapping *Share* opens Android's own share sheet with a readable summary of the document: type and number, client, date, total and status. Ready for WhatsApp, Gmail, Drive and so on. | **Due-date reminders.** On an open tax invoice, *Remind me on the due date* first asks for Android's notification permission. The reminder is then scheduled on the device for 09:00 on the due date, worked out from the client's payment terms. Tapping the notification opens that invoice. |
+| <img src="docs/screenshots/android-biometric-lock.png" width="260" alt="MyBiz lock screen with an unlock button"> | <img src="docs/screenshots/android-unsaved-changes.png" width="260" alt="Leave without saving dialog over the client edit form"> |
+| **Biometric app lock.** On a device with a screen lock, financial data stays behind the fingerprint, face unlock or device PIN. The lock appears when the app starts or returns after more than a minute in the background. | **Unsaved changes guard.** Editing a client and pressing Android's **system back gesture** asks *"Leave without saving?"* before discarding the change, the same as the toolbar's back arrow. The app hooks into Android's hardware back button, so the native gesture can't bypass the guard. |
+
 ## Deployment
 
 - **Web (Netlify):** configured by `netlify.toml`. Set the `VITE_API_URL` environment variable to the API's URL.
