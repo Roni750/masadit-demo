@@ -1,0 +1,48 @@
+name: Android APK
+
+# Builds an installable debug APK, so the app can be tried on a phone without installing Android Studio.
+# Download it from the run's "Artifacts" section, copy it to an Android phone, and open it to install
+# (Android asks to allow installs from that source once).
+on:
+  push:
+    branches: [main]
+    paths: ['web/**', 'package-lock.json', '.github/workflows/android.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    env:
+      CYPRESS_INSTALL_BINARY: 0
+      # The phone can't reach localhost: set the deployed API's URL as a repository variable
+      # (Settings → Secrets and variables → Actions → Variables → VITE_API_URL)
+      VITE_API_URL: ${{ vars.VITE_API_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+      - run: npm ci
+      - name: Warn when no API URL is set
+        if: env.VITE_API_URL == ''
+        run: echo "::warning::VITE_API_URL is not set; the APK will try to reach http://localhost:3001 and show no data."
+      - name: Build the web app and copy it into the Android project
+        run: npm run android:sync -w web
+      - name: Build the debug APK
+        working-directory: web/android
+        run: ./gradlew assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mybiz-debug-apk
+          path: web/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
