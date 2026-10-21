@@ -24,6 +24,11 @@ export const he = {
     cancelled: 'מבוטל',
   },
   document: {
+    copied: 'פרטי המסמך הועתקו',
+    remindMe: 'תזכיר לי במועד התשלום',
+    reminderSet: 'אזכיר לך ב-{{date}} בשעה 09:00',
+    reminderOverdue: 'מועד התשלום עבר, אזכיר לך מחר בשעה 09:00',
+    reminderDenied: 'כדי לקבל תזכורות יש לאשר התראות בהגדרות המכשיר',
     vat: 'מע״מ',
     creditFor: 'זיכוי {{type}} מספר {{number}}',
     loadError: 'לא הצלחנו לטעון את המסמך',
@@ -79,6 +84,7 @@ export const he = {
     emptyClosable: 'לא נמצאו מסמכים שאפשר לסגור בעזרת {{type}} {{number}}',
   },
   clients: {
+    savedOffline: 'נשמר במכשיר, יישלח כשהחיבור יחזור',
     title: 'כרטיס לקוח',
     editTitle: 'עריכת לקוח',
     loadError: 'לא הצלחנו לטעון את הלקוח',
@@ -156,6 +162,7 @@ export const he = {
     recipient: 'נמען',
   },
   home: {
+    install: 'התקן אפליקציה',
     chooseBusiness: 'בחר עסק',
     businessIdLabel: 'ע.מ.',
     welcome: 'ברוך הבא לאפליקציית ניהול העסק שלך',
@@ -201,7 +208,18 @@ export const he = {
     offline: 'אין חיבור לאינטרנט, אבל עדיין אפשר לצפות בנתונים שכבר נטענו',
     backOnline: 'החיבור חזר',
   },
+  reminders: {
+    dueTitle: '{{type}} #{{number}} לתשלום היום',
+    overdueTitle: '{{type}} #{{number}} עבר את מועד התשלום',
+    body: 'הלקוח: {{client}}. הקש כדי לפתוח את המסמך',
+  },
+  lock: {
+    title: 'MyBiz נעולה',
+    reason: 'אמת את זהותך כדי לפתוח את MyBiz',
+    unlock: 'פתיחה',
+  },
   errors: {
+    offline: 'הפעולה הזו דורשת חיבור לאינטרנט',
     invalid_request: 'חלק מהשדות לא תקינים',
     already_closed: 'המסמך כבר סגור',
     already_allocated: 'המסמך כבר משויך',

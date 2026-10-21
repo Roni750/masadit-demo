@@ -13,17 +13,19 @@ import {
   IonSkeletonText,
   IonTitle,
   IonToolbar,
-  useIonRouter,
   useIonToast,
 } from '@ionic/react';
 import { arrowBack } from 'ionicons/icons';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAppRouter } from '../../pages';
 import { useParams } from 'react-router-dom';
 import { PAYMENT_TERMS, type Client, type ClientChanges, type PaymentTerms } from '../../domain/clients';
 import { useConfirm } from '../../hooks/useConfirm';
 import { useErrorToast } from '../../hooks/useErrorToast';
 import { useHardwareBackGuard } from '../../hooks/useHardwareBackGuard';
+import { successFeedback } from '../../lib/native';
+import { useIsOnline } from '../../state/network';
 import { useClient, useUpdateClient } from './queries';
 import '../documents/documents.css';
 import './clients.css';
@@ -134,12 +136,13 @@ const validate = (values: FormValues): Partial<Record<TextField, string>> => {
 const ClientEditPage: React.FC = () => {
   const id = Number(useParams().id);
   const { t } = useTranslation();
-  const router = useIonRouter();
+  const router = useAppRouter();
   const confirm = useConfirm();
   const showError = useErrorToast();
   const [presentToast] = useIonToast();
   const client = useClient(id);
   const updateClient = useUpdateClient(id);
+  const isOnline = useIsOnline();
 
   const initial = useMemo(() => (client.data ? toFormValues(client.data) : null), [client.data]);
   const [values, setValues] = useState<FormValues | null>(null);
@@ -168,8 +171,17 @@ const ClientEditPage: React.FC = () => {
       setTouched(Object.fromEntries(TEXT_FIELDS.map((field) => [field, true])));
       return;
     }
+    // Offline, the save is queued (see useUpdateClient): the card already shows the change,
+    // so leave right away instead of waiting for a request that can't be sent yet
+    if (!isOnline) {
+      updateClient.mutate(toChanges(values), { onError: showError });
+      void presentToast({ message: t('clients.savedOffline'), duration: 2500, position: 'bottom' });
+      leave();
+      return;
+    }
     updateClient.mutate(toChanges(values), {
       onSuccess: () => {
+        void successFeedback();
         void presentToast({ message: t('clients.saved'), duration: 1500, position: 'bottom' });
         leave();
       },

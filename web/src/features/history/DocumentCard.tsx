@@ -1,10 +1,20 @@
-import { IonIcon, IonRippleEffect, useIonRouter } from '@ionic/react';
-import { briefcase, person, timeOutline } from 'ionicons/icons';
+import {
+  IonIcon,
+  IonItem,
+  IonItemOption,
+  IonItemOptions,
+  IonItemSliding,
+  IonRippleEffect,
+} from '@ionic/react';
+import { useRef } from 'react';
+import { briefcase, flagOutline, person, shareSocialOutline, timeOutline } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 import { isForeignCurrency, type DocumentSummary } from '../../domain/documents';
 import { formatDate, formatMoney } from '../../lib/format';
-import { pages } from '../../pages';
+import { tapFeedback } from '../../lib/native';
+import { pages, useAppRouter } from '../../pages';
 import { useIntlLocale } from '../../state/locale';
+import { useShareDocument } from '../documents/useShareDocument';
 import { StatusPill } from './StatusPill';
 import './DocumentCard.css';
 
@@ -15,12 +25,24 @@ interface DocumentCardProps {
 export const DocumentCard: React.FC<DocumentCardProps> = ({ document }) => {
   const { t } = useTranslation();
   const locale = useIntlLocale();
-  const router = useIonRouter();
+  const router = useAppRouter();
   const foreign = isForeignCurrency(document);
+  const shareDocument = useShareDocument();
+  const sliding = useRef<HTMLIonItemSlidingElement>(null);
+
+  // Runs a swipe action, then slides the card closed again
+  const swipeAction = (action: () => unknown) => () => {
+    void tapFeedback();
+    void sliding.current?.close();
+    action();
+  };
 
   return (
-    // Two sibling buttons (card body and status pill) instead of nesting one inside the other
-    <article className="document-card" data-document-id={document.id}>
+    // Swiping the card reveals quick actions; Ionic mirrors the swipe direction in RTL
+    <IonItemSliding ref={sliding} className="document-card-sliding" data-document-id={document.id}>
+      <IonItem lines="none" className="document-card-item">
+        {/* Two sibling buttons (card body and status pill) instead of nesting one inside the other */}
+        <article className="document-card">
       <button
         type="button"
         className="document-card__body ion-activatable"
@@ -77,6 +99,19 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document }) => {
           onClick={() => router.push(`/documents/${document.id}/status`)}
         />
       </div>
-    </article>
+        </article>
+      </IonItem>
+
+      <IonItemOptions side="end">
+        <IonItemOption color="primary" onClick={swipeAction(() => shareDocument(document))}>
+          <IonIcon slot="top" icon={shareSocialOutline} aria-hidden="true" />
+          {t('document.share')}
+        </IonItemOption>
+        <IonItemOption color="medium" onClick={swipeAction(() => router.push(`/documents/${document.id}/status`))}>
+          <IonIcon slot="top" icon={flagOutline} aria-hidden="true" />
+          {t('document.editStatus')}
+        </IonItemOption>
+      </IonItemOptions>
+    </IonItemSliding>
   );
 };

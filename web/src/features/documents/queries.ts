@@ -9,6 +9,8 @@ import {
   fetchDocument,
 } from '../../api/documents';
 import { documentKeys } from '../../api/queryKeys';
+import { requireOnline } from '../../api/requireOnline';
+import { successFeedback } from '../../lib/native';
 import type { DocumentSummary, Paginated } from '../../domain/documents';
 
 // The History list usually has this document cached already; showing it lets the
@@ -46,12 +48,17 @@ export const useClosableDocuments = (id: number) =>
   });
 
 // Every write changes statuses, balances and totals that many cached queries show
-// (lists, totals, details, candidates), so each one refreshes all documents queries on success
+// (lists, totals, details, candidates), so each one refreshes all documents queries on success.
+// Document writes are regulated bookkeeping actions: they never queue offline (see requireOnline).
 const useDocumentsMutation = <TVariables>(mutationFn: (variables: TVariables) => Promise<unknown>) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: documentKeys.all }),
+    mutationFn: requireOnline(mutationFn),
+    networkMode: 'always',
+    onSuccess: () => {
+      void successFeedback();
+      return queryClient.invalidateQueries({ queryKey: documentKeys.all });
+    },
   });
 };
 
@@ -66,9 +73,11 @@ export const useCancelDocument = () => useDocumentsMutation((id: number) => canc
 
 export const useDeleteDocument = () => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: number) => deleteDocument(id),
+  return useMutation<void, Error, number>({
+    mutationFn: requireOnline((id: number) => deleteDocument(id)),
+    networkMode: 'always',
     onSuccess: (_result, id) => {
+      void successFeedback();
       // The deleted document's own detail would only refetch into a 404 while the screen closes
       queryClient.removeQueries({ queryKey: documentKeys.detail(id) });
       return queryClient.invalidateQueries({ queryKey: documentKeys.all });

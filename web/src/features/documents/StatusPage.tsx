@@ -10,14 +10,13 @@ import {
   IonTitle,
   IonToolbar,
   useIonActionSheet,
-  useIonRouter,
 } from '@ionic/react';
 import { ellipsisVertical } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useErrorToast } from '../../hooks/useErrorToast';
 import { formatDate, formatMoney } from '../../lib/format';
-import { pages } from '../../pages';
+import { pages, useAppRouter } from '../../pages';
 import { useIntlLocale } from '../../state/locale';
 import { ClosingRow } from './ClosingRow';
 import { ClosingSummaryCard } from './ClosingSummaryCard';
@@ -30,7 +29,7 @@ const StatusPage: React.FC = () => {
   const id = Number(useParams().id);
   const { t } = useTranslation();
   const locale = useIntlLocale();
-  const router = useIonRouter();
+  const router = useAppRouter();
   const showError = useErrorToast();
   const [presentActionSheet] = useIonActionSheet();
 

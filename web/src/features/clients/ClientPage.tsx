@@ -11,14 +11,13 @@ import {
   IonSegmentButton,
   IonTitle,
   IonToolbar,
-  useIonRouter,
 } from '@ionic/react';
 import { pencil } from 'ionicons/icons';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import type { DocumentStatus, DocumentType } from '../../domain/documents';
-import { pages } from '../../pages';
+import { pages, useAppRouter } from '../../pages';
 import { DocumentFeed } from '../history/DocumentFeed';
 import { ClientDetails } from './ClientDetails';
 import { LedgerView } from './LedgerView';
@@ -32,7 +31,7 @@ type StatusFilter = 'all' | DocumentStatus;
 const ClientPage: React.FC = () => {
   const id = Number(useParams().id);
   const { t } = useTranslation();
-  const router = useIonRouter();
+  const router = useAppRouter();
   const client = useClient(id);
   const [tab, setTab] = useState<Tab>('details');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');

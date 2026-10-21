@@ -4,7 +4,12 @@ import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useIsOnline } from './network';
 
-// Tells the user when the connection drops (staying up until it returns) and when it's back
+// The header of the screen on top of Ionic's navigation stack (Home has none).
+// Scoped to the router outlet: <ion-app> carries the ion-page class too.
+const visibleHeader = () =>
+  [...document.querySelectorAll<HTMLElement>('ion-router-outlet > .ion-page:not(.ion-page-hidden) ion-header')].at(-1);
+
+// Tells the user when the connection drops and when it's back
 export const NetworkNotice: React.FC = () => {
   const isOnline = useIsOnline();
   const { t } = useTranslation();
@@ -20,6 +25,9 @@ export const NetworkNotice: React.FC = () => {
         message: t('network.offline'),
         icon: cloudOfflineOutline,
         position: 'top',
+        // Just below the current screen's header, so toolbar buttons (back, Save) stay reachable
+        positionAnchor: visibleHeader(),
+        duration: 5000,
         color: 'dark',
         cssClass: 'network-toast',
         buttons: [{ text: t('common.ok'), role: 'cancel' }],
@@ -31,6 +39,7 @@ export const NetworkNotice: React.FC = () => {
           message: t('network.backOnline'),
           icon: cloudDoneOutline,
           position: 'top',
+          positionAnchor: visibleHeader(),
           color: 'success',
           duration: 2500,
           cssClass: 'network-toast',

@@ -1,13 +1,15 @@
-import { IonContent, IonFooter, IonIcon, IonPage, IonRippleEffect, useIonRouter } from '@ionic/react';
-import { add, home, sparkles, appsOutline } from 'ionicons/icons';
+import { IonContent, IonFooter, IonIcon, IonPage, IonRippleEffect } from '@ionic/react';
+import { add, appsOutline, downloadOutline, home, sparkles } from 'ionicons/icons';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../../components/LanguageSwitcher';
 import { Logo } from '../../components/Logo';
+import { useInstallPrompt } from '../../hooks/useInstallPrompt';
 import { useWipAlert } from '../../hooks/useWipAlert';
 import { formatDate, formatMoney } from '../../lib/format';
 import { whenIdle } from '../../lib/lazyPage';
-import { pages } from '../../pages';
+import { tapFeedback } from '../../lib/native';
+import { pages, useAppRouter } from '../../pages';
 import { useIntlLocale } from '../../state/locale';
 import { DEMO_BUSINESS, DEMO_LAST_DOCUMENT, DEMO_STATS, HOME_SECTIONS, type HomeAction } from './homeData';
 import './HomePage.css';
@@ -17,18 +19,28 @@ const ils = (amount: number) => ({ amount, currency: 'ILS' });
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
   const locale = useIntlLocale();
-  const router = useIonRouter();
+  const router = useAppRouter();
   const showWip = useWipAlert();
+  const { canInstall, install } = useInstallPrompt();
 
   // History is the one working destination: fetch its code while Home sits idle
   useEffect(() => whenIdle(() => void pages.history.preload()), []);
 
-  const open = (action: HomeAction) => (action.href ? router.push(action.href) : void showWip());
+  const open = (action: HomeAction) => {
+    void tapFeedback();
+    return (action.href ? router.push(action.href) : void showWip());
+  };
 
   return (
     <IonPage>
       <IonContent className="home-content">
         <div className="home-topbar">
+          {canInstall && (
+            <button type="button" className="home-chip home-install" onClick={() => void install()}>
+              <IonIcon icon={downloadOutline} aria-hidden="true" />
+              {t('home.install')}
+            </button>
+          )}
           <LanguageSwitcher />
         </div>
         <header className="home-header">

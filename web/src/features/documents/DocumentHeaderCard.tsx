@@ -1,8 +1,8 @@
-import { IonIcon, IonSkeletonText, useIonRouter } from '@ionic/react';
+import { IonIcon, IonSkeletonText } from '@ionic/react';
 import { timeOutline } from 'ionicons/icons';
 import type { DocumentSummary } from '../../domain/documents';
 import { formatDate } from '../../lib/format';
-import { pages } from '../../pages';
+import { pages, useAppRouter } from '../../pages';
 import { useIntlLocale } from '../../state/locale';
 import { StatusPill } from '../history/StatusPill';
 import './documents.css';
@@ -15,7 +15,7 @@ interface DocumentHeaderCardProps {
 
 export const DocumentHeaderCard: React.FC<DocumentHeaderCardProps> = ({ document, linkStatus = true }) => {
   const locale = useIntlLocale();
-  const router = useIonRouter();
+  const router = useAppRouter();
 
   if (!document) {
     return (

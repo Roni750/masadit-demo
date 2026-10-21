@@ -12,7 +12,7 @@ import {
   IonTitle,
   IonToolbar,
   useIonActionSheet,
-  useIonRouter,
+  useIonToast,
 } from '@ionic/react';
 import { add, mailOutline, optionsOutline, printOutline, shareSocialOutline, trashOutline } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
@@ -22,8 +22,10 @@ import { useConfirm } from '../../hooks/useConfirm';
 import { useErrorToast } from '../../hooks/useErrorToast';
 import { useWipAlert } from '../../hooks/useWipAlert';
 import { formatDate, formatMoney } from '../../lib/format';
-import { pages } from '../../pages';
+import { pages, useAppRouter } from '../../pages';
 import { useIntlLocale } from '../../state/locale';
+import { canRemind, scheduleDueReminder } from './reminders';
+import { useShareDocument } from './useShareDocument';
 import { DocumentHeaderCard } from './DocumentHeaderCard';
 import { useCancelDocument, useDeleteDocument, useDocument } from './queries';
 import './documents.css';
@@ -101,11 +103,14 @@ const SectionsSkeleton: React.FC = () => (
 const DocumentPage: React.FC = () => {
   const id = Number(useParams().id);
   const { t } = useTranslation();
-  const router = useIonRouter();
+  const router = useAppRouter();
   const showWip = useWipAlert();
   const confirm = useConfirm();
   const showError = useErrorToast();
   const [presentActionSheet] = useIonActionSheet();
+  const [presentToast] = useIonToast();
+  const shareDocument = useShareDocument();
+  const locale = useIntlLocale();
 
   const { data: document, summary, isError, refetch } = useDocument(id);
   const cancelDocument = useCancelDocument();
@@ -127,6 +132,20 @@ const DocumentPage: React.FC = () => {
   };
 
   const wip = () => void showWip();
+  const share = () => summary && void shareDocument(summary);
+
+  const remind = async () => {
+    if (!summary) return;
+    const result = await scheduleDueReminder(summary, t).catch(() => null);
+    if (!result) return showError(null);
+    const message =
+      result === 'denied'
+        ? t('document.reminderDenied')
+        : result.overdue
+          ? t('document.reminderOverdue')
+          : t('document.reminderSet', { date: formatDate(result.scheduledFor.toISOString().slice(0, 10), locale) });
+    void presentToast({ message, duration: 3000, position: 'bottom' });
+  };
 
   // The menu leads to the status and close-other screens: load them while it opens
   const openMenu = () => {
@@ -139,7 +158,8 @@ const DocumentPage: React.FC = () => {
         { text: t('document.preview'), handler: wip },
         { text: t('document.print'), handler: wip },
         { text: t('document.printTrueCopy'), handler: wip },
-        { text: t('document.share'), handler: wip },
+        { text: t('document.share'), handler: share },
+        ...(summary && canRemind(summary) ? [{ text: t('document.remindMe'), handler: () => void remind() }] : []),
         { text: t('document.email'), handler: wip },
         { text: t('document.editStatus'), handler: () => router.push(`/documents/${id}/status`) },
         ...(summary?.type === 'quote' ? [{ text: t('document.copyQuote'), handler: wip }] : []),
@@ -167,7 +187,7 @@ const DocumentPage: React.FC = () => {
     });
 
   const quickActions = [
-    { label: t('document.share'), icon: shareSocialOutline, onClick: wip },
+    { label: t('document.share'), icon: shareSocialOutline, onClick: share },
     { label: t('document.print'), icon: printOutline, onClick: wip },
     { label: t('document.email'), icon: mailOutline, onClick: wip },
     { label: t('document.delete'), icon: trashOutline, onClick: () => void handleDelete() },

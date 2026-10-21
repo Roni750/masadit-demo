@@ -32,4 +32,6 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Biometric app lock (@capgo/capacitor-native-biometric doesn't declare it itself) -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 </manifest>

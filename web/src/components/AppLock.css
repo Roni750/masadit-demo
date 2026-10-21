@@ -1,0 +1,17 @@
+/* Covers the whole app, including overlays, while locked */
+.app-lock {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background: var(--app-page-background);
+}
+
+.app-lock h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}

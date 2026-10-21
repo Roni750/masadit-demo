@@ -1,5 +1,23 @@
 /* Logical properties (inline-start/end) so the layout mirrors automatically between RTL and LTR */
 
+/* The sliding wrapper carries the spacing; the IonItem inside is only there for swiping */
+.document-card-sliding {
+  margin: 0 12px 10px;
+  border-radius: 6px;
+}
+
+.document-card-item {
+  --background: transparent;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --min-height: 0;
+}
+
+.document-card-item .document-card {
+  flex: 1;
+  margin: 0;
+}
+
 .document-card {
   position: relative;
   margin: 0 12px 10px;

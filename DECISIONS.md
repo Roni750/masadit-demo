@@ -139,6 +139,8 @@ A page-shaped skeleton covers the rare case where a chunk hasn't arrived yet, so
 
 **Consequences:** Measured: each screen is now 1–3 KB gzipped, but the first load only dropped from ~359 KB to ~338 KB gzipped. Most of the weight is shared library code (Ionic, React, i18n, TanStack Query) that Home needs too. On native builds the files are local, so the gain is parse time rather than download time.
 
+**Correction (found later):** the first version used `React.lazy`, which suspends on a page's first render even when its code is already loaded. Ionic then animated the Suspense fallback, and the real page stayed transparent after every in-app navigation. The tests didn't catch it, because Cypress acts on transparent elements. Now pages that have loaded render synchronously (`web/src/lib/lazyPage.ts`), navigation waits for the target's code (`useAppRouter`), and an end-to-end test asserts that each screen is actually shown after every transition.
+
 ---
 
 ## 11. Viewed data is not saved to the device
@@ -150,3 +152,34 @@ A page-shaped skeleton covers the rare case where a chunk hasn't arrived yet, so
 **Why:** It is financial data, and device storage isn't encrypted by default. Keeping it on the phone would also raise how long it lives there and when it must be cleared, for example on sign-out. That risk isn't worth it for offline reading.
 
 **Consequences:** Offline, the app shows data that was already loaded in the current session, and the offline notice says exactly that. A write queued while offline is lost if the app is closed before the connection returns.
+
+---
+
+## 12. Offline, only writes that touch no accounting records are allowed
+
+**Context:** With no connection, a write can either fail at once, or be queued and sent when the connection returns.
+
+**Decision:**
+- **Queued offline:** editing client details. The change shows immediately and is sent on reconnect; it is rolled back if the server rejects it.
+- **Blocked offline**, failing at once with a clear message: closing documents, linking closing documents, cancelling and deleting.
+
+**Why:** Writes that change the books must never be replayed late. Another user may have changed the same documents in the meantime, a delayed retry could apply twice, and cancelling or deleting tax documents is regulated. Client contact details carry none of those risks.
+
+**Consequences:** Queued writes live in memory (decision 11), so a queued edit is lost if the app is closed before the connection returns.
+
+---
+
+## 13. Native touches, except push notifications
+
+**Decision:**
+- Haptic feedback on taps and on confirmed writes.
+- A status bar matching the app's toolbar.
+- Swipe actions on History cards.
+- Sharing a document through the system share sheet, falling back to the clipboard.
+- Local due-date reminders that open the document when tapped.
+- A biometric lock (fingerprint, face or device PIN) when the app opens or returns after a minute.
+- An "Install app" button for the PWA.
+
+**Why:** These make the app feel native without new infrastructure. Push notifications were left out: they need Firebase and Apple developer accounts, plus device tokens stored and sent from the backend, which is beyond the scope of this assignment.
+
+**Consequences:** Reminders, the biometric lock and the status bar exist only in the native app. Ionic's programmatic opening of swipe actions mishandles right-to-left layouts, so swipe actions are tested in English; swiping with a finger in Hebrew is still to be checked on a real phone.

@@ -1,6 +1,7 @@
-import { IonButton, IonIcon, IonSkeletonText, useIonActionSheet, useIonRouter } from '@ionic/react';
+import { IonButton, IonIcon, IonSkeletonText, useIonActionSheet } from '@ionic/react';
 import { ellipsisVertical } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
+import { useAppRouter } from '../../pages';
 import type { LedgerEntry } from '../../domain/clients';
 import { useWipAlert } from '../../hooks/useWipAlert';
 import { formatDate, formatMoney } from '../../lib/format';
@@ -11,7 +12,7 @@ import './clients.css';
 export const LedgerView: React.FC<{ clientId: number }> = ({ clientId }) => {
   const { t } = useTranslation();
   const locale = useIntlLocale();
-  const router = useIonRouter();
+  const router = useAppRouter();
   const showWip = useWipAlert();
   const [presentActionSheet] = useIonActionSheet();
   const ledger = useLedger(clientId);

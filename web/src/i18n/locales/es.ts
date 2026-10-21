@@ -26,6 +26,11 @@ export const es: Translations = {
     cancelled: 'Anulado',
   },
   document: {
+    copied: 'Datos del documento copiados',
+    remindMe: 'Recordármelo al vencimiento',
+    reminderSet: 'Te lo recordaré el {{date}} a las 09:00',
+    reminderOverdue: 'Ya está vencido. Te lo recordaré mañana a las 09:00',
+    reminderDenied: 'Permite las notificaciones en los ajustes del dispositivo para recibir recordatorios',
     vat: 'IVA',
     creditFor: 'Rectifica {{type}} n.º {{number}}',
     loadError: 'No pudimos cargar el documento',
@@ -81,6 +86,7 @@ export const es: Translations = {
     emptyClosable: 'No hay documentos que se puedan cerrar con {{type}} {{number}}',
   },
   clients: {
+    savedOffline: 'Guardado en el dispositivo. Se enviará al recuperar la conexión',
     title: 'Ficha de cliente',
     editTitle: 'Editar cliente',
     loadError: 'No pudimos cargar el cliente',
@@ -158,6 +164,7 @@ export const es: Translations = {
     recipient: 'Destinatario',
   },
   home: {
+    install: 'Instalar app',
     chooseBusiness: 'Cambiar negocio',
     businessIdLabel: 'N.º reg.',
     welcome: 'Bienvenido a la app de gestión de tu negocio',
@@ -203,7 +210,18 @@ export const es: Translations = {
     offline: 'Estás sin conexión, pero aún puedes ver los datos ya cargados',
     backOnline: 'Conexión restablecida',
   },
+  reminders: {
+    dueTitle: '{{type}} n.º {{number}} vence hoy',
+    overdueTitle: '{{type}} n.º {{number}} está vencido',
+    body: 'Cliente: {{client}}. Toca para abrir el documento',
+  },
+  lock: {
+    title: 'MyBiz está bloqueada',
+    reason: 'Verifica tu identidad para abrir MyBiz',
+    unlock: 'Desbloquear',
+  },
   errors: {
+    offline: 'Esta acción necesita conexión a internet',
     invalid_request: 'Algunos campos no son válidos',
     already_closed: 'El documento ya está cerrado',
     already_allocated: 'Ese documento ya está aplicado',

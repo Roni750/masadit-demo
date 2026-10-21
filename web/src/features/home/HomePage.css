@@ -22,8 +22,20 @@
 /* Language switcher row, then the header: logo and business details */
 .home-topbar {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  gap: 8px;
   margin-bottom: 6px;
+}
+
+/* Shown only when the browser offers installing the PWA */
+.home-install {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-inline-end: auto;
+  border-color: var(--ion-color-primary);
+  color: var(--ion-color-primary);
 }
 
 .home-header {

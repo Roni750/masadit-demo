@@ -26,6 +26,11 @@ export const en: Translations = {
     cancelled: 'Cancelled',
   },
   document: {
+    copied: 'Document details copied',
+    remindMe: 'Remind me on the due date',
+    reminderSet: "I'll remind you on {{date}} at 09:00",
+    reminderOverdue: "It's past due. I'll remind you tomorrow at 09:00",
+    reminderDenied: 'Allow notifications in your device settings to get reminders',
     vat: 'VAT',
     creditFor: 'Credit for {{type}} #{{number}}',
     loadError: "We couldn't load this document",
@@ -81,6 +86,7 @@ export const en: Translations = {
     emptyClosable: 'No documents can be closed with {{type}} {{number}}',
   },
   clients: {
+    savedOffline: "Saved on this device. It will sync when you're back online",
     title: 'Client card',
     editTitle: 'Edit client',
     loadError: "We couldn't load this client",
@@ -158,6 +164,7 @@ export const en: Translations = {
     recipient: 'Recipient',
   },
   home: {
+    install: 'Install app',
     chooseBusiness: 'Switch business',
     businessIdLabel: 'Reg. no.',
     welcome: 'Welcome to your business management app',
@@ -203,7 +210,18 @@ export const en: Translations = {
     offline: "You're offline, but you can still view data that's already loaded",
     backOnline: "You're back online",
   },
+  reminders: {
+    dueTitle: '{{type}} #{{number}} is due today',
+    overdueTitle: '{{type}} #{{number}} is past due',
+    body: 'Client: {{client}}. Tap to open the document',
+  },
+  lock: {
+    title: 'MyBiz is locked',
+    reason: 'Verify your identity to open MyBiz',
+    unlock: 'Unlock',
+  },
   errors: {
+    offline: 'This action needs an internet connection',
     invalid_request: 'Some fields are invalid',
     already_closed: 'The document is already closed',
     already_allocated: 'That document is already applied',

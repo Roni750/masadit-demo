@@ -4,7 +4,9 @@ import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './api/queryClient';
+import { AppLock } from './components/AppLock';
 import { PageFallback } from './components/PageFallback';
+import { NotificationRouter } from './features/documents/NotificationRouter';
 import HomePage from './features/home/HomePage';
 import type { PreloadablePage } from './lib/lazyPage';
 import { pages } from './pages';
@@ -46,6 +48,7 @@ const App: React.FC = () => (
     <IonApp>
       <NetworkNotice />
       <IonReactRouter>
+        <NotificationRouter />
         <IonRouterOutlet>
           <Route path="/home" element={<HomePage />} />
           <Route path="/history" element={lazyRoute(pages.history)} />
@@ -57,6 +60,7 @@ const App: React.FC = () => (
           <Route path="/" element={<Navigate to="/home" replace />} />
         </IonRouterOutlet>
       </IonReactRouter>
+      <AppLock />
     </IonApp>
   </QueryClientProvider>
 );
