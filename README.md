@@ -51,7 +51,11 @@ The API's Postgres integration tests run when `TEST_DATABASE_URL` points to a di
 
 ## Android
 
-The native Android project is in `web/android` (app ID `io.github.roni750.masaditdemo`). Building it requires [Android Studio](https://developer.android.com/studio).
+The native Android project is in `web/android` (app ID `io.github.roni750.masaditdemo`).
+
+**Install it without building anything:** every push builds a debug APK in GitHub Actions. Open the latest **Android APK** run, download `mybiz-debug-apk` under *Artifacts*, copy `app-debug.apk` to an Android phone and open it. The APK talks to the API at the repository variable `VITE_API_URL`.
+
+**Build it yourself** (requires [Android Studio](https://developer.android.com/studio)):
 
 ```bash
 cd web
