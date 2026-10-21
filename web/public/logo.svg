@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- App icon source: every PWA and native icon size is generated from this file -->
+  <rect width="512" height="512" fill="#ffffff"/>
+  <text x="256" y="262" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="700" font-size="200" fill="#111111">My</text>
+  <text x="300" y="392" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="100" fill="#333333">BIZ</text>
+  <polygon points="150,318 175,303 200,318 200,348 175,363 150,348" fill="#2bb5a5"/>
+  <polygon points="120,368 140,356 160,368 160,393 140,405 120,393" fill="#f2a52b"/>
+  <polygon points="170,373 190,361 210,373 210,398 190,410 170,398" fill="#8bc34a"/>
+</svg>
