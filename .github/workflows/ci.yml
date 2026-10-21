@@ -66,14 +66,29 @@ jobs:
       - run: npm ci
       - name: Create and seed the database
         run: npm run db:migrate -w api && npm run db:seed -w api
+      # Started and awaited here rather than by the Cypress action, whose built-in wait gives up
+      # on the first refused connection instead of retrying while the servers boot
+      - name: Start the API and the web dev server
+        run: nohup npm run dev > dev-servers.log 2>&1 &
+      - name: Wait for both servers
+        run: |
+          for attempt in $(seq 1 60); do
+            if curl -sf http://localhost:3001/health > /dev/null && curl -sf http://localhost:8100 > /dev/null; then
+              echo "Servers are up"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Servers did not start within 2 minutes"
+          cat dev-servers.log
+          exit 1
       - uses: cypress-io/github-action@v6
         with:
           working-directory: web
           install: false
-          # Starts the API and the web dev server together (root workspace script)
-          start: npm --prefix .. run dev
-          wait-on: 'http://localhost:3001/health, http://localhost:8100'
-          wait-on-timeout: 120
+      - name: Show the dev servers' log
+        if: failure()
+        run: cat dev-servers.log
       - name: Upload screenshots of failed specs
         if: failure()
         uses: actions/upload-artifact@v4
