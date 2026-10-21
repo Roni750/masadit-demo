@@ -197,6 +197,10 @@ export const he = {
     },
     tabs: { home: 'בית', myBusiness: 'העסק שלי', ai: 'CP.AI', new: 'חדש' },
   },
+  network: {
+    offline: 'אין חיבור לאינטרנט, אבל עדיין אפשר לצפות בנתונים שכבר נטענו',
+    backOnline: 'החיבור חזר',
+  },
   errors: {
     invalid_request: 'חלק מהשדות לא תקינים',
     already_closed: 'המסמך כבר סגור',

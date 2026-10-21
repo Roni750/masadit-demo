@@ -199,6 +199,10 @@ export const es: Translations = {
     },
     tabs: { home: 'Inicio', myBusiness: 'Mi negocio', ai: 'CP.AI', new: 'Nuevo' },
   },
+  network: {
+    offline: 'Estás sin conexión, pero aún puedes ver los datos ya cargados',
+    backOnline: 'Conexión restablecida',
+  },
   errors: {
     invalid_request: 'Algunos campos no son válidos',
     already_closed: 'El documento ya está cerrado',

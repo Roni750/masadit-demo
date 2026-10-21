@@ -199,6 +199,10 @@ export const en: Translations = {
     },
     tabs: { home: 'Home', myBusiness: 'My business', ai: 'CP.AI', new: 'New' },
   },
+  network: {
+    offline: "You're offline, but you can still view data that's already loaded",
+    backOnline: "You're back online",
+  },
   errors: {
     invalid_request: 'Some fields are invalid',
     already_closed: 'The document is already closed',

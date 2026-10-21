@@ -9,6 +9,7 @@ import HomePage from './features/home/HomePage';
 import type { PreloadablePage } from './lib/lazyPage';
 import { pages } from './pages';
 import { LocaleSync } from './state/LocaleSync';
+import { NetworkNotice } from './state/NetworkNotice';
 import './i18n';
 
 /* Core CSS required for Ionic components to work properly */
@@ -43,6 +44,7 @@ const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
     <LocaleSync />
     <IonApp>
+      <NetworkNotice />
       <IonReactRouter>
         <IonRouterOutlet>
           <Route path="/home" element={<HomePage />} />
