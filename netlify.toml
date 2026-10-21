@@ -1,0 +1,15 @@
+# Web app only. The API is deployed separately on Render (see render.yaml).
+[build]
+  command = "npm run build -w web"
+  publish = "web/dist"
+  # Skip deploys when a commit doesn't touch the web app or dependencies
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- web/ package.json package-lock.json netlify.toml"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# SPA fallback: deep links like /history/123 must serve index.html on refresh
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

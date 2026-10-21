@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: masadit-api
+    runtime: node
+    plan: free
+    # Same region as the Supabase database, so every query doesn't cross an ocean
+    region: frankfurt
+    buildCommand: npm ci && npm run build -w api
+    startCommand: npm run start -w api
+    healthCheckPath: /health
+    # Skip deploys when a commit doesn't touch the API or dependencies
+    buildFilter:
+      paths:
+        - api/**
+        - package.json
+        - package-lock.json
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Supabase connection string (set in the Render dashboard)
+      - key: DATABASE_URL
+        sync: false
+      # Comma-separated; add the Netlify site URL here
+      - key: CORS_ORIGINS
+        sync: false
