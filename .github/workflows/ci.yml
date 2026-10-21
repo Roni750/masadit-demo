@@ -5,10 +5,10 @@ on:
     branches: [main]
   pull_request:
 
-# A newer push to the same branch cancels the run it supersedes
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Only pull requests cancel superseded runs; every commit on main keeps a real result
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   checks:

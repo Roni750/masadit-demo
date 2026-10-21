@@ -4,7 +4,13 @@ import { join } from 'node:path';
 import { defineConfig } from 'cypress';
 import ExcelJS from 'exceljs';
 
+// On CI the dev server compiles each screen on its first request, so first visits are slow
+const onCi = !!process.env.CI;
+
 export default defineConfig({
+  // One retry on CI separates a cold-server hiccup from a real failure; locally, fail fast
+  retries: { runMode: onCi ? 1 : 0, openMode: 0 },
+  defaultCommandTimeout: onCi ? 10_000 : 4_000,
   e2e: {
     baseUrl: 'http://localhost:8100',
     setupNodeEvents(on, config) {
