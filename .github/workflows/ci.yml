@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A newer push to the same branch cancels the run it supersedes
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, unit & integration tests, build
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      # Enables the API's Postgres integration tests against this throwaway database
+      TEST_DATABASE_URL: postgresql://postgres:test@localhost:5432/postgres
+      CYPRESS_INSTALL_BINARY: 0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint -w web
+      - name: Web unit tests
+        run: npm test
+      - name: API route and integration tests
+        run: npm test -w api -- --run
+      - name: Build
+        run: npm run build
+
+  e2e:
+    name: End-to-end (Cypress)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      # The API and the specs' reseed task both use this database
+      DATABASE_URL: postgresql://postgres:test@localhost:5432/postgres
+      DATABASE_SSL: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Create and seed the database
+        run: npm run db:migrate -w api && npm run db:seed -w api
+      - uses: cypress-io/github-action@v6
+        with:
+          working-directory: web
+          install: false
+          # Starts the API and the web dev server together (root workspace script)
+          start: npm --prefix .. run dev
+          wait-on: 'http://localhost:3001/health, http://localhost:8100'
+          wait-on-timeout: 120
+      - name: Upload screenshots of failed specs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: web/cypress/screenshots
+          if-no-files-found: ignore
